@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UsersService {
   // これだとメモリ上にユーザー情報を保存している->DBに保存するように変更することで永続的に保存できる
   // users: createUserDto[] = [];
+  // DBに保存するように変更することで永続的に保存できる
   constructor(private readonly prisma: PrismaService) {}
 
   create(user: createUserDto) {
@@ -20,3 +21,16 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 }
+
+/*
+// スプレッド演算子
+const user = {
+  name: 'John',
+  age: 30
+};
+
+const data = {
+  ...user
+};
+
+ */

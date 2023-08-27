@@ -1,4 +1,5 @@
-import { Get, Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+// controllerは送られたリクエストを受け取り、serviceに処理を委譲する
+import { Get, Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
