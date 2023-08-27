@@ -1,4 +1,4 @@
-import { Get, Body, Controller, Post } from '@nestjs/common';
+import { Get, Body, Controller, Post, ValidationPipe } from "@nestjs/common";
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
@@ -10,7 +10,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
   @Post()
-  create(@Body() createUser: createUserDto) {
+  // createUserDtoの型をValidationPipeで検証する
+  // createUserDto内の@IsString()などのデコレーターで検証する
+  create(@Body(ValidationPipe) createUser: createUserDto) {
     return this.usersService.create(createUser);
   }
 }
