@@ -20,6 +20,14 @@ export class UsersService {
   findAll() {
     return this.prisma.user.findMany();
   }
+
+  findByName(username: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  }
 }
 
 /*
