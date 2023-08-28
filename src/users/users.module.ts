@@ -7,5 +7,7 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [UsersController],
   providers: [UsersService],
+  // exportしないと、他のモジュールでUsersServiceを使用できない
+  exports: [UsersService],
 })
 export class UsersModule {}

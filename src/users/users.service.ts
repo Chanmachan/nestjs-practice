@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -9,11 +10,14 @@ export class UsersService {
   // DBに保存するように変更することで永続的に保存できる
   constructor(private readonly prisma: PrismaService) {}
 
-  create(user: createUserDto) {
+  async create(user: createUserDto) {
     // this.users.push(user);
     return this.prisma.user.create({
       data: {
         ...user,
+        // ここでパスワードをハッシュ化する
+        // 第二引数のソルトは今回は10で固定
+        password: await bcrypt.hash(user.password, 10),
       },
     });
   }
