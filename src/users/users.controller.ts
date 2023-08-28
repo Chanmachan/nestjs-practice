@@ -2,13 +2,16 @@
 import {
   Get,
   Body,
+  Request,
   Controller,
   Post,
   ValidationPipe,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -18,8 +21,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
   @Get(':username')
-  findByName(@Param('username') username: string) {
-    return this.usersService.findByName(username);
+  // 今回はjwtを使って認証するので、@UseGuards(AuthGuard('jwt'))を使う
+  // リクエストがくるたびに、jwtの認証を行う
+  @UseGuards(AuthGuard('jwt'))
+  findByName(@Param('username') username: string, @Request() req: any) {
+    return req.user;
+    /*
+    "iat"はトークンが発行された時間を表す
+    "exp"はトークンが有効期限切れになる時間を表す
+     */
   }
 
   @Post()
