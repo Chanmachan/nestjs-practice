@@ -8,12 +8,12 @@ import * as bcrypt from 'bcryptjs';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly UsersService: UsersService,
+    private readonly usersService: UsersService,
   ) {}
 
   async validateUser({ username, password }: createUserDto) {
     // ここでfindByNameを使うためにUsersServiceをインポートする->UsersServiceはusers.module.tsでexportしている
-    const user = await this.UsersService.findByName(username);
+    const user = await this.usersService.findByName(username);
     // compareは平文のパスワードとハッシュ化されたパスワードを比較できる
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
@@ -27,7 +27,7 @@ export class AuthService {
     if (await this.validateUser(user)) {
       const payload = { username: user.username };
       return {
-        'access_token': this.jwtService.sign(payload),
+        access_token: this.jwtService.sign(payload),
       };
     }
   }
