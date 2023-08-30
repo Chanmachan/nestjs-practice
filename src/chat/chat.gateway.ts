@@ -29,7 +29,6 @@ export class ChatGateway
   }
   @SubscribeMessage('msgToServer')
   handleMessage(client: any, payload: MessageDto): void {
-    console.log(payload.timestamp + ' from ' + payload.author);
     this.server.emit('msgToClient', payload);
   }
 }

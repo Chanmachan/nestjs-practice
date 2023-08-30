@@ -12,6 +12,22 @@ datasource db {
 
 model User {
   id        Int     @id @default(autoincrement())
+  // @uniqueはフィールドの値が一意であることを保証する
   username  String @unique
   password  String
+  // 1対多の関係を定義
+  messages  Message[]
+}
+
+model Message {
+  id        Int     @id @default(autoincrement())
+  content   String
+  // 現在の日時をデフォルト値として設定
+  createdAt DateTime @default(now())
+  // 更新日時を自動的に設定
+  updatedAt DateTime @updatedAt
+  // 1対多の関係を定義
+  // ここは曖昧だから後で確認
+  author    User     @relation(fields: [userId], references: [id])
+  userId    Int
 }

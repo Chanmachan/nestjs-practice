@@ -1,5 +1,7 @@
 export class MessageDto {
   readonly content: string;
-  readonly author: string;
-  readonly timestamp: Date;
+  readonly userId: number;
+  // prismaが自動で作成するため、オプションにする
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
