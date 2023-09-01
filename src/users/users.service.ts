@@ -64,6 +64,23 @@ export class UsersService {
       }
     }
   }
+  // chat.service.tsで使う
+  // usernameからidを取得する
+  async getUserInfo(username: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        username: true,
+        id: true,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
 }
 
 /*
