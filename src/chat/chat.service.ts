@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MessageDto } from './dto/message.dto';
 import { UsersService } from '../users/users.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ChatService {
@@ -19,8 +24,23 @@ export class ChatService {
     });
   }
   async getMessages() {
-    const messages = this.prisma.message.findMany();
-    if (!messages) throw new NotFoundException();
-    return messages;
+    try {
+      const messages = await this.prisma.message.findMany();
+      // ここでメッセージがない場合は例外返したいけどうまくできなかった
+      // 今はメッセージが一つもなくても空の配列が返ってくる
+      if (!messages) throw new NotFoundException('No messages found');
+      return messages;
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2025'
+      ) {
+        // カラムが存在しない、またはその他のPrismaエラーの場合の処理
+        throw new InternalServerErrorException('Database error');
+      } else {
+        // その他の未知のエラー
+        throw new InternalServerErrorException('An unexpected error occurred');
+      }
+    }
   }
 }
