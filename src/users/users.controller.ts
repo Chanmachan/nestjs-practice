@@ -7,7 +7,7 @@ import {
   Post,
   ValidationPipe,
   Param,
-  UseGuards,
+  UseGuards, Delete,
 } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -37,5 +37,10 @@ export class UsersController {
   // createUserDto内の@IsString()などのデコレーターで検証する
   create(@Body(ValidationPipe) createUser: createUserDto) {
     return this.usersService.create(createUser);
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':username')
+  delete(@Param('username') username: string) {
+    return this.usersService.delete(username);
   }
 }

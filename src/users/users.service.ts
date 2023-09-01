@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -35,6 +36,27 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+  async delete(username: string) {
+    try {
+      await this.prisma.user.delete({
+        where: {
+          username,
+        },
+      });
+      return 'Deleted';
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        // 2015 -> "A related record could not be found. {details}"
+        // 2025 -> "An operation failed because it depends on one or more records that were required but not found. {cause}"
+        e.code === 'P2025'
+      ) {
+        throw new NotFoundException('User not found');
+      } else {
+        throw new InternalServerErrorException('Something went wrong');
+      }
+    }
   }
 }
 
