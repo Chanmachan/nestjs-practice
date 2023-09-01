@@ -7,7 +7,8 @@ import {
   Post,
   ValidationPipe,
   Param,
-  UseGuards, Delete,
+  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';

@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
@@ -9,7 +13,8 @@ export class UsersService {
   // これだとメモリ上にユーザー情報を保存している->DBに保存するように変更することで永続的に保存できる
   // users: createUserDto[] = [];
   // DBに保存するように変更することで永続的に保存できる
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {
+  }
 
   async create(user: createUserDto) {
     // this.users.push(user);
@@ -22,6 +27,7 @@ export class UsersService {
       },
     });
   }
+
   findAll() {
     return this.prisma.user.findMany();
   }
@@ -37,6 +43,7 @@ export class UsersService {
     }
     return user;
   }
+
   async delete(username: string) {
     try {
       await this.prisma.user.delete({
