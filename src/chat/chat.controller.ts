@@ -1,7 +1,7 @@
 import {
   Body,
-  Controller,
-  Get,
+  Controller, Delete,
+  Get, Param,
   Post,
   Request,
   UseGuards,
@@ -22,5 +22,22 @@ export class ChatController {
   @Get()
   getMessages() {
     return this.chatService.getMessages();
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':username')
+  getMessagesByUsername(@Param('username') username: string) {
+    return this.chatService.getMessagesByUsername(username);
+  }
+  // 別のユーザーのメッセージも消せてしまうのでコメントアウト
+  // @UseGuards(AuthGuard('jwt'))
+  // @Delete()
+  // deleteLastMessage() {
+  //   return this.chatService.deleteLastMessage();
+  // }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':username')
+  deleteMessages(@Param('username') username: string) {
+    return this.chatService.deleteMessages(username);
   }
 }

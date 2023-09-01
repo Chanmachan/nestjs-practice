@@ -43,4 +43,63 @@ export class ChatService {
       }
     }
   }
+  async getMessagesByUsername(username: string) {
+    const user = await this.usersService.getUserInfo(username);
+    const messages = await this.prisma.message.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (!messages) throw new NotFoundException('No messages found');
+    return messages;
+  }
+
+  // async deleteLastMessage() {
+  //   try {
+  //     const lastMessage = await this.prisma.message.findFirst({
+  //       orderBy: {
+  //         createdAt: 'desc',
+  //       },
+  //     });
+  //     if (!lastMessage) throw new NotFoundException('No messages found');
+  //     const deleteResult = await this.prisma.message.delete({
+  //       where: {
+  //         messageId: lastMessage.messageId,
+  //       },
+  //     });
+  //     if (!deleteResult) throw new NotFoundException('No messages found');
+  //     return 'Last message deleted';
+  //   } catch (e) {
+  //     if (e instanceof NotFoundException) {
+  //       throw new NotFoundException('No messages found');
+  //     } else {
+  //       throw new InternalServerErrorException(
+  //         'An error occurred while deleting messages',
+  //       );
+  //     }
+  //   }
+  // }
+  async deleteMessages(username: string) {
+    try {
+      const user = await this.usersService.getUserInfo(username);
+      if (!user) throw new NotFoundException('User not found');
+      const deleteResult = await this.prisma.message.deleteMany({
+        where: {
+          userId: user.id,
+        },
+      });
+      if (deleteResult.count === 0) {
+        return 'No messages to delete';
+      }
+      return 'All of your messages are deleted';
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw new NotFoundException('User not found');
+      } else {
+        throw new InternalServerErrorException(
+          'An error occurred while deleting messages',
+        );
+      }
+    }
+  }
 }
