@@ -1,44 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MessageDto } from './dto/message.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  async sendMessage(id: number, message: MessageDto) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly usersService: UsersService,
+  ) {}
+  async sendMessage(req: any, message: MessageDto) {
+    const userId = await this.usersService.getUserInfo(req.user.username);
     return this.prisma.message.create({
-      data: message,
-    });
-  }
-  async getAllMessages() {
-    return this.prisma.message.findMany({
-      orderBy: {
-        // 作成日時の降順で取得する
-        createdAt: 'desc',
+      data: {
+        content: message.content,
+        userId: userId.id,
       },
     });
   }
-  async getMessageById(id: number) {
-    return this.prisma.message.findUnique({
-      where: {
-        id,
-      },
-    });
-  }
-  async deleteMessage(id: number) {
-    return this.prisma.message.delete({
-      where: {
-        id,
-      },
-    });
-  }
-  async updateMessage(id: number, message: MessageDto) {
-    return this.prisma.message.update({
-      where: {
-        id,
-      },
-      data: message,
-    });
+  async getMessages() {
+    const messages = this.prisma.message.findMany();
+    if (!messages) throw new NotFoundException();
+    return messages;
   }
 }
