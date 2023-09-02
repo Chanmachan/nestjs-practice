@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
-import { ChatModule } from './chat/chat.module';
+import { ChatModule } from './chat-websocket/chat.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ChatModule],
