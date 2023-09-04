@@ -1,15 +1,17 @@
-import { Body, Controller, Get, Post, Request, Response } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Response, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { MessageDto } from '../chat-websocket/dto/message.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   sendMessage(@Body() message: MessageDto, @Request() req: any) {
     return this.chatService.sendMessage(message, req);
   }
-  @Get()
+  @Get('sse')
   async sse(@Request() req: any, @Response() res: any) {
     // ここでヘッダーを設定する
     // event-streamを指定することでsseプロトコルを使用することを伝える
@@ -31,22 +33,3 @@ export class ChatController {
     });
   }
 }
-
-/*
-@Get('sse')
-  async sse(@Request() req, @Response() res) {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
-    const messageSubscription = this.chatService.messageUpdates.subscribe(
-      (message) => {
-        res.write(`data: ${JSON.stringify(message)}\n\n`);
-      },
-    );
-
-    res.on('close', () => {
-      messageSubscription.unsubscribe();
-    });
-  }
- */
