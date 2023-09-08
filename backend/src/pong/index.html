@@ -78,8 +78,19 @@
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
       dx = -dx;
     }
-    if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+    if (y + dy < ballRadius) {
       dy = -dy;
+    } else if (y + dy > canvas.height - ballRadius) {
+      // paddleがy軸の0にいるとき、x座標がpaddleの幅の範囲内にあるかを確認する
+      if (x > paddleX && x < paddleX + paddleWidth) {
+        dy = -dy;
+      } else {
+        alert("GAME OVER");
+        // ページをリロードする
+        document.location.reload();
+        // これがないと終了してるのにintervalが動き続けてしまう
+        clearInterval(interval); // Needed for Chrome to end game
+      }
     }
 
     if(rightPressed) {
@@ -101,25 +112,7 @@
 
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
-  setInterval(draw, 10);
-  /*ctx.beginPath();
-  ctx.rect(20, 40, 50, 50);
-  ctx.fillStyle = "#FF0000";
-  ctx.fill();
-  ctx.closePath();
-
-  ctx.beginPath();
-  ctx.arc(240, 160, 20, 0, Math.PI*2, false);
-  ctx.fillStyle = "green";
-  ctx.fill();
-  ctx.closePath();
-
-  ctx.beginPath();
-  ctx.rect(160, 10, 100, 40);
-  // alpha は透明度
-  ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
-  ctx.stroke();
-  ctx.closePath();*/
+  const interval = setInterval(draw, 10);
 </script>
 </body>
 </html>
