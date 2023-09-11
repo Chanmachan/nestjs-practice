@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <title>Gamedev Canvas Workshop</title>
+  <style>
+      * {
+          padding: 0;
+          margin: 0;
+      }
+      canvas {
+          background: #eee;
+          display: block;
+          margin: 0 auto;
+      }
+  </style>
+</head>
+<body>
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<script>
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let x = canvas.width/20;
+  let y = canvas.height-30;
+  let dx = 2;
+  let dy = 2;
+  let ballRadius = 10;
+
+  const paddleHeight = 10;
+  const paddleWidth = 75;
+  let paddleX = (canvas.width - paddleWidth) / 2;
+
+  const ball = {
+    x: canvas.width/2,
+    y: canvas.height/2,
+    dx: 2,
+    dy: 2,
+    Radius: 10
+  }
+
+  const paddle1 = {
+    x: (canvas.width - paddleWidth) / 2,
+    y: canvas.height - paddleHeight,
+    paddleHeight: 10,
+    paddleWidth: 75
+  }
+
+  const paddle2 = {
+    x: (canvas.width - paddleWidth) / 2,
+    y: 0,
+    paddleHeight: 10,
+    paddleWidth: 75
+  }
+
+  function drawBall(obj) {
+    ctx.beginPath();
+    ctx.arc(obj.x, obj.y, obj.Radius, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  function drawPaddle(obj) {
+    ctx.beginPath();
+    ctx.rect(obj.x, obj.y, obj.paddleWidth, obj.paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  function collisionDetection() {
+    // この関数をpaddleに当たったかを判定する関数に修正する
+    // if ()
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall(ball);
+    drawPaddle(paddle1);
+    drawPaddle(paddle2);
+    collisionDetection();
+
+    if (ball.x + ball.dx > canvas.width - ball.Radius || ball.x + ball.dx < ball.Radius) {
+      ball.dx = -ball.dx;
+    }
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+  }
+
+
+  // document.addEventListener("keydown", keyDownHandler, false);
+  // document.addEventListener("keyup", keyUpHandler, false);
+  const interval = setInterval(draw, 10);
+</script>
+</body>
+</html>
