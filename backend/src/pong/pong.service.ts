@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { GameStateDto } from './dto/game-state.dto';
-import { Ball, Paddle } from './interfaces/object.interface';
 
 @Injectable()
 export class PongService {
