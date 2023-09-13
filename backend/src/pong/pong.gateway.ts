@@ -24,4 +24,9 @@ export class PongGateway {
     this.gameState = this.pongService.nextGameState(this.gameState, data);
     this.server.emit('gameState', this.gameState);
   }
+  @SubscribeMessage('moveBall')
+  handleMoveBall(client: any, data: GameStateDto) {
+    this.gameState = this.pongService.nextGameState(this.gameState, data);
+    this.server.emit('gameState', this.gameState);
+  }
 }
