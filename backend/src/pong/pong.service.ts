@@ -36,8 +36,8 @@ export class PongService {
     };
   }
 
-  nextGameState(gameState: GameStateDto, data: GameStateDto
-    // TODO: あとで実装
+  nextGameState(gameState: GameStateDto, data: GameStateDto) {
+    gameState = data;
     return gameState;
   }
 }
